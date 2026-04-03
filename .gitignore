@@ -1,0 +1,8 @@
+__pycache__/
+*.pyc
+server.log
+server.err.log
+sample.npy
+gittoken.text
+renderkey.txt
+.env
