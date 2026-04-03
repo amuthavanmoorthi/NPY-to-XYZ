@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>NPY to XYZ Converter</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+  </head>
+  <body>
+    <main class="page-shell">
+      <section class="hero-card">
+        <p class="eyebrow">Public upload page</p>
+        <h1>Convert `.npy` point data into `.xyz` files</h1>
+        <p class="lede">
+          Upload a NumPy array and download a plain-text XYZ file in one step.
+          The converter uses the first three numeric values for each point.
+        </p>
+
+        <form id="upload-form" class="upload-panel">
+          <label for="file-input" class="dropzone" id="dropzone">
+            <input id="file-input" name="file" type="file" accept=".npy" required>
+            <span class="dropzone-title">Drop a `.npy` file here</span>
+            <span class="dropzone-subtitle">or click to browse</span>
+          </label>
+
+          <div class="meta-row">
+            <div>
+              <p class="meta-label">Selected file</p>
+              <p class="meta-value" id="selected-file">No file selected</p>
+            </div>
+            <div>
+              <p class="meta-label">Upload limit</p>
+              <p class="meta-value">{{ max_upload_mb }} MB</p>
+            </div>
+          </div>
+
+          <button type="submit" id="submit-button">Convert to XYZ</button>
+        </form>
+
+        <div class="status-panel" id="status-panel" hidden>
+          <p class="status-title" id="status-title"></p>
+          <p class="status-copy" id="status-copy"></p>
+        </div>
+
+        <div class="assumptions">
+          <p>Accepted array patterns</p>
+          <ul>
+            <li>`(N, 3)` numeric point clouds</li>
+            <li>Higher-dimensional numeric arrays whose last dimension is at least 3</li>
+            <li>Structured arrays with `x`, `y`, and `z` fields</li>
+          </ul>
+        </div>
+      </section>
+    </main>
+
+    <script>
+      const form = document.getElementById("upload-form");
+      const fileInput = document.getElementById("file-input");
+      const selectedFile = document.getElementById("selected-file");
+      const submitButton = document.getElementById("submit-button");
+      const statusPanel = document.getElementById("status-panel");
+      const statusTitle = document.getElementById("status-title");
+      const statusCopy = document.getElementById("status-copy");
+      const dropzone = document.getElementById("dropzone");
+
+      function setStatus(title, copy, isError = false) {
+        statusPanel.hidden = false;
+        statusPanel.dataset.state = isError ? "error" : "success";
+        statusTitle.textContent = title;
+        statusCopy.textContent = copy;
+      }
+
+      function updateSelectedFile() {
+        const [file] = fileInput.files;
+        selectedFile.textContent = file ? file.name : "No file selected";
+      }
+
+      fileInput.addEventListener("change", updateSelectedFile);
+
+      ["dragenter", "dragover"].forEach((eventName) => {
+        dropzone.addEventListener(eventName, (event) => {
+          event.preventDefault();
+          dropzone.dataset.dragging = "true";
+        });
+      });
+
+      ["dragleave", "drop"].forEach((eventName) => {
+        dropzone.addEventListener(eventName, (event) => {
+          event.preventDefault();
+          if (eventName === "drop" && event.dataTransfer.files.length) {
+            fileInput.files = event.dataTransfer.files;
+            updateSelectedFile();
+          }
+          dropzone.dataset.dragging = "false";
+        });
+      });
+
+      form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const [file] = fileInput.files;
+        if (!file) {
+          setStatus("No file selected", "Choose a .npy file first.", true);
+          return;
+        }
+
+        const formData = new FormData();
+        formData.append("file", file);
+
+        submitButton.disabled = true;
+        submitButton.textContent = "Converting...";
+        setStatus("Working on it", "Uploading and converting your file.");
+
+        try {
+          const response = await fetch("/api/convert", {
+            method: "POST",
+            body: formData,
+          });
+
+          if (!response.ok) {
+            const payload = await response.json();
+            throw new Error(payload.error || "Conversion failed.");
+          }
+
+          const blob = await response.blob();
+          const downloadUrl = URL.createObjectURL(blob);
+          const anchor = document.createElement("a");
+          const downloadName = file.name.replace(/\.npy$/i, ".xyz");
+          anchor.href = downloadUrl;
+          anchor.download = downloadName;
+          document.body.appendChild(anchor);
+          anchor.click();
+          anchor.remove();
+          URL.revokeObjectURL(downloadUrl);
+
+          const pointCount = response.headers.get("X-Point-Count");
+          const sourceShape = response.headers.get("X-Source-Shape");
+          setStatus(
+            "Conversion complete",
+            `${pointCount} points exported from source shape ${sourceShape}.`
+          );
+        } catch (error) {
+          setStatus("Conversion failed", error.message, true);
+        } finally {
+          submitButton.disabled = false;
+          submitButton.textContent = "Convert to XYZ";
+        }
+      });
+    </script>
+  </body>
+</html>
