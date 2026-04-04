@@ -75,12 +75,12 @@ def healthz() -> tuple[object, int]:
     return jsonify({"status": "ok"}), 200
 
 
-@app.get("/google<token>.html")
-def google_site_verification(token: str) -> tuple[str, int, dict[str, str]]:
+@app.get("/google040a4ee6205a7c97.html")
+def google_site_verification() -> tuple[str, int, dict[str, str]]:
     return (
-        f"google-site-verification: google{token}.html",
+        "google-site-verification: google040a4ee6205a7c97.html",
         200,
-        {"Content-Type": "text/html; charset=utf-8"},
+        {"Content-Type": "text/plain; charset=utf-8"},
     )
 
 
