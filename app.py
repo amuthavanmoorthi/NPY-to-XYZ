@@ -10,6 +10,7 @@ from flask import Flask, jsonify, render_template, request, send_file
 
 app = Flask(__name__)
 MAX_UPLOAD_MB = 100
+SITE_URL = os.getenv("SITE_URL", "https://npy-xyz-converter.onrender.com").rstrip("/")
 app.config["MAX_CONTENT_LENGTH"] = MAX_UPLOAD_MB * 1024 * 1024
 
 
@@ -67,7 +68,11 @@ def convert_npy_bytes_to_xyz(file_bytes: bytes) -> tuple[bytes, int, str]:
 
 @app.get("/")
 def index() -> str:
-    return render_template("index.html", max_upload_mb=MAX_UPLOAD_MB)
+    return render_template(
+        "index.html",
+        max_upload_mb=MAX_UPLOAD_MB,
+        site_url=SITE_URL,
+    )
 
 
 @app.get("/healthz")
@@ -82,6 +87,31 @@ def google_site_verification() -> tuple[str, int, dict[str, str]]:
         200,
         {"Content-Type": "text/plain; charset=utf-8"},
     )
+
+
+@app.get("/robots.txt")
+def robots_txt() -> tuple[str, int, dict[str, str]]:
+    body = (
+        "User-agent: *\n"
+        "Allow: /\n"
+        f"Sitemap: {SITE_URL}/sitemap.xml\n"
+    )
+    return body, 200, {"Content-Type": "text/plain; charset=utf-8"}
+
+
+@app.get("/sitemap.xml")
+def sitemap_xml() -> tuple[str, int, dict[str, str]]:
+    body = (
+        '<?xml version="1.0" encoding="UTF-8"?>\n'
+        '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+        "  <url>\n"
+        f"    <loc>{SITE_URL}/</loc>\n"
+        "    <changefreq>weekly</changefreq>\n"
+        "    <priority>1.0</priority>\n"
+        "  </url>\n"
+        "</urlset>\n"
+    )
+    return body, 200, {"Content-Type": "application/xml; charset=utf-8"}
 
 
 @app.post("/api/convert")
