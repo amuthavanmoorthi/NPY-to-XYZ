@@ -75,6 +75,15 @@ def healthz() -> tuple[object, int]:
     return jsonify({"status": "ok"}), 200
 
 
+@app.get("/google<token>.html")
+def google_site_verification(token: str) -> tuple[str, int, dict[str, str]]:
+    return (
+        f"google-site-verification: google{token}.html",
+        200,
+        {"Content-Type": "text/html; charset=utf-8"},
+    )
+
+
 @app.post("/api/convert")
 def convert() -> tuple[object, int] | object:
     uploaded_file = request.files.get("file")
