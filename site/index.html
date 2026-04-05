@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>NPY to XYZ Converter | Free Online NumPy File Converter</title>
+    <meta
+      name="description"
+      content="Convert NumPy .npy point-cloud files into .xyz format online for free. Files are processed locally in your browser and downloaded instantly."
+    >
+    <meta
+      name="robots"
+      content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1"
+    >
+    <link rel="canonical" href="https://npy-xyz-converter.onrender.com/">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="NPY to XYZ Converter">
+    <meta
+      property="og:description"
+      content="Free online converter for turning NumPy .npy point data into downloadable .xyz files."
+    >
+    <meta property="og:url" content="https://npy-xyz-converter.onrender.com/">
+    <meta property="og:site_name" content="NPY to XYZ Converter">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="NPY to XYZ Converter">
+    <meta
+      name="twitter:description"
+      content="Convert NumPy .npy point-cloud files into .xyz format online for free."
+    >
+    <link rel="stylesheet" href="./styles.css">
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "NPY to XYZ Converter",
+        "url": "https://npy-xyz-converter.onrender.com/",
+        "applicationCategory": "UtilitiesApplication",
+        "operatingSystem": "Any",
+        "browserRequirements": "Requires JavaScript and a modern browser",
+        "description": "Convert NumPy .npy point data into downloadable .xyz text files online.",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        }
+      }
+    </script>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "What .npy array shapes are supported?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "The converter supports numeric arrays shaped like (N, 3), higher-dimensional numeric arrays whose last dimension is at least 3, and structured arrays with x, y, and z fields."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Do files get uploaded to a server?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "No. Files are processed locally inside your browser in the static version of this tool."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Does this support .npz archives?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "No. This tool currently supports .npy files only."
+            }
+          }
+        ]
+      }
+    </script>
+  </head>
+  <body>
+    <main class="page-shell">
+      <section class="hero-card hero-card--primary">
+        <div class="hero-grid">
+          <div>
+            <p class="eyebrow">Free browser converter</p>
+            <h1>Convert `.npy` point data into `.xyz` files</h1>
+            <p class="lede">
+              Upload a NumPy `.npy` file, convert it in your browser, and
+              download a plain-text `.xyz` file instantly. No signup, no server
+              upload, and no paid hosting required.
+            </p>
+          </div>
+          <div class="trust-panel">
+            <p class="trust-title">Why this version is better for indexing</p>
+            <ul class="trust-list">
+              <li>Always-on static site with no backend sleep</li>
+              <li>Files stay on your device during conversion</li>
+              <li>Works for common point-cloud style NumPy arrays</li>
+            </ul>
+          </div>
+        </div>
+
+        <form id="upload-form" class="upload-panel">
+          <label for="file-input" class="dropzone" id="dropzone">
+            <input id="file-input" name="file" type="file" accept=".npy" required>
+            <span class="dropzone-title">Drop a `.npy` file here</span>
+            <span class="dropzone-subtitle">or click to browse</span>
+          </label>
+
+          <div class="meta-row">
+            <div>
+              <p class="meta-label">Selected file</p>
+              <p class="meta-value" id="selected-file">No file selected</p>
+            </div>
+            <div>
+              <p class="meta-label">Processing mode</p>
+              <p class="meta-value">Local browser conversion</p>
+            </div>
+          </div>
+
+          <div class="action-row">
+            <button type="submit" id="submit-button">Convert to XYZ</button>
+            <button type="button" id="download-sample-button" class="button-secondary">
+              Download sample XYZ
+            </button>
+          </div>
+        </form>
+
+        <div class="status-panel" id="status-panel" hidden>
+          <p class="status-title" id="status-title"></p>
+          <p class="status-copy" id="status-copy"></p>
+        </div>
+
+        <section class="preview-panel" id="preview-panel" hidden>
+          <div class="preview-head">
+            <div>
+              <p class="meta-label">Preview</p>
+              <p class="meta-value" id="preview-summary"></p>
+            </div>
+          </div>
+          <pre id="preview-output"></pre>
+        </section>
+      </section>
+
+      <section class="hero-card section-card">
+        <div class="section-head">
+          <p class="eyebrow">How it works</p>
+          <h2>Browser-based `.npy` to `.xyz` conversion</h2>
+        </div>
+        <div class="feature-grid">
+          <article class="feature-card">
+            <h3>1. Open a `.npy` file</h3>
+            <p>
+              Choose a NumPy file that contains point data. The tool reads the
+              file header and array structure directly in the browser.
+            </p>
+          </article>
+          <article class="feature-card">
+            <h3>2. Extract XYZ coordinates</h3>
+            <p>
+              For numeric arrays, the first three values of each point become
+              the output coordinates. Structured arrays can also use `x`, `y`,
+              and `z` fields.
+            </p>
+          </article>
+          <article class="feature-card">
+            <h3>3. Download plain-text output</h3>
+            <p>
+              The result is saved as a `.xyz` text file where each line contains
+              `x y z` values, ready for point-cloud workflows and downstream
+              processing.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <section class="hero-card section-card">
+        <div class="section-head">
+          <p class="eyebrow">Supported input</p>
+          <h2>Accepted array patterns</h2>
+        </div>
+        <div class="content-grid">
+          <div class="content-card">
+            <h3>Numeric arrays</h3>
+            <ul>
+              <li>`(N, 3)` arrays of float or integer point coordinates</li>
+              <li>Higher-dimensional arrays with at least 3 values in the last dimension</li>
+              <li>1D arrays with exactly 3 values for a single XYZ point</li>
+            </ul>
+          </div>
+          <div class="content-card">
+            <h3>Structured arrays</h3>
+            <ul>
+              <li>Record arrays with `x`, `y`, and `z` fields</li>
+              <li>Common little-endian numeric dtypes such as `f4`, `f8`, `i4`, and `u4`</li>
+              <li>Local conversion only, with no server upload</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="hero-card section-card">
+        <div class="section-head">
+          <p class="eyebrow">FAQ</p>
+          <h2>Common questions</h2>
+        </div>
+        <div class="faq-list">
+          <details>
+            <summary>Does this upload my file to a server?</summary>
+            <p>
+              No. The static version processes files locally in your browser, so
+              your `.npy` file stays on your device during conversion.
+            </p>
+          </details>
+          <details>
+            <summary>Can I convert `.npz` files too?</summary>
+            <p>
+              Not yet. This tool is focused on `.npy` files only.
+            </p>
+          </details>
+          <details>
+            <summary>Why is the output plain text?</summary>
+            <p>
+              Standard `.xyz` files are text-based, so each output line contains
+              one point in the form `x y z`.
+            </p>
+          </details>
+          <details>
+            <summary>What if my array has more than 3 values per point?</summary>
+            <p>
+              The converter uses the first three values from the last dimension
+              of each point and ignores any extra trailing values.
+            </p>
+          </details>
+        </div>
+      </section>
+    </main>
+
+    <script src="./app.js"></script>
+  </body>
+</html>
