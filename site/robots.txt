@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://npy-xyz-converter.onrender.com/sitemap.xml
