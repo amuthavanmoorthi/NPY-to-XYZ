@@ -6,3 +6,6 @@ sample.npy
 gittoken.text
 renderkey.txt
 .env
+
+chrome-headless-profile/
+edge-headless-profile/
